@@ -210,7 +210,7 @@ isSpecialType = show >>> \ case
 
 isSpecialName :: QName -> Maybe (Hs.QName ())
 isSpecialName = show >>> \ case
-    "Agda.Builtin.Nat.Nat"         -> unqual "Natural"
+    "Agda.Builtin.Nat.Nat"         -> unqual "Nat"
     "Agda.Builtin.Int.Int"         -> unqual "Integer"
     "Agda.Builtin.Word.Word64"     -> unqual "Word"
     "Agda.Builtin.Float.Float"     -> unqual "Double"
@@ -647,7 +647,7 @@ compileClause locals x c@Clause{clauseTel = tel, namedClausePats = ps', clauseBo
         (body', children'') = everywhere (mkT shrinkLocalDefs) (body, children')
 
     body' <- fromMaybe (hsError $ pp x ++ ": impossible") <$> mapM compileTerm body'
-    whereDecls <- concat <$> mapM (uncurry compileFun') children''
+    whereDecls <- concat <$> mapM (\ x -> tail <$> ((uncurry compileFun') x) ) children''
 
     let rhs = Hs.UnGuardedRhs () body'
         whereBinds | null whereDecls = Nothing
